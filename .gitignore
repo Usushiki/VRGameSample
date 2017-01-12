@@ -4,8 +4,8 @@
 /[Bb]uild/
 /[Bb]uilds/
 /Assets/AssetStoreTools*
-/Assets/QHierarchy*
-/Assets/VRTK*
+/Assets/QHierarchy/
+/Assets/VRTK/
 Library/
 Obj/
 Temp/
