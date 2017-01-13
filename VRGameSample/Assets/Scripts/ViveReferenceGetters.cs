@@ -12,6 +12,10 @@ public class ViveReferenceGetters : MonoBehaviour
     [Tooltip("Left Controller")]
     [SerializeField]
     private GameObject leftController;
+    [SerializeField]
+    private SteamVR_TrackedObject leftControllerTracked;
+
+
 
     [Tooltip("Right Controller")]
     [SerializeField]
@@ -60,8 +64,8 @@ public class ViveReferenceGetters : MonoBehaviour
     public SteamVR_Controller.Device GetLeftControllerInputDevice()
     {
 
-        SteamVR_TrackedObject trackedObject = leftController.GetComponent<SteamVR_TrackedObject>();
-        return SteamVR_Controller.Input((int)trackedObject.index);
+       
+        return SteamVR_Controller.Input((int)leftControllerTracked.index);
     }
 
     //Right Controller
