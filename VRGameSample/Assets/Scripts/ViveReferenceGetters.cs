@@ -1,10 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ViveReference;
+
+namespace ViveReference
+{
+    [System.Serializable]
+    public enum WITCH_HANDS
+    {
+        LEFT = 0,
+        RIGHT = 1,
+    }
+
+}
+
+
+
 
 public class ViveReferenceGetters : MonoBehaviour
 {
 
+    
+
+  
     #region Member
 
     [Header("Reference parameters PLEASE SET!!!")]
@@ -23,10 +41,17 @@ public class ViveReferenceGetters : MonoBehaviour
 
 
 
+    
+
     private int leftControllerIndex = -1;
     private int rightControllerIndex = -1;
 
+    SteamVR_Controller.Device leftInput = null;
+    SteamVR_Controller.Device rightInput = null;
+
     public static ViveReferenceGetters instance = null;
+
+    private bool started = false;
 
     #endregion 
 
@@ -42,7 +67,16 @@ public class ViveReferenceGetters : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-		
+        if (started)
+            return;
+
+        started = true;
+
+        if (leftController == null) throw new UnityException("left Hand Game Object is not assigned.");
+        if (leftControllerTracked == null) throw new UnityException("left Hand SteamVR_TrackedObject is not assingned.");
+
+        if (rightController == null) throw new UnityException("right hand game object is not assingned.");
+               	
 	}
 	
 	// Update is called once per frame
@@ -53,35 +87,27 @@ public class ViveReferenceGetters : MonoBehaviour
 
 
     //LeftController
-    public GameObject GetLeftControllerObject()
+    public static GameObject GetControllerObject(WITCH_HANDS witch_Hands)
     {
-        return leftController;
+        return witch_Hands == WITCH_HANDS.LEFT ? instance.leftController : instance.rightController;
     }
-    public Transform GetLeftControllerTransform()
+    public static Transform GetLeftControllerTransform(WITCH_HANDS witch_Hands)
     {
-        return leftController.transform;
+        return witch_Hands == WITCH_HANDS.LEFT ? instance.leftController.transform : instance.rightController.transform;
     }
-    public SteamVR_Controller.Device GetLeftControllerInputDevice()
+    public static SteamVR_Controller.Device GetLeftControllerInputDevice(WITCH_HANDS witch_Hands)
     {
+        SteamVR_Controller.Device input = (witch_Hands == WITCH_HANDS.LEFT) ? instance.leftInput : instance.rightInput;
 
-       
-        return SteamVR_Controller.Input((int)leftControllerTracked.index);
+        if (input != null)
+            return input;
+
+        string t = (witch_Hands == WITCH_HANDS.LEFT) ? "Left Input" : "Right Input";
+        Debug.LogWarning("WARNING:" + t + "dies not exist in ViveReferenceGetters.cs");
+
+
+        return null;
     }
 
-    //Right Controller
-    public GameObject GetRightControllerObject()
-    {
-        return rightController;
-    }
-    public Transform GetRightControllerTransform()
-    {
-        return rightController.transform;
-    
-    }
-    public SteamVR_Controller.Device GetRightInputDevice()
-    {
-        SteamVR_TrackedObject trackedObject = rightController.GetComponent<SteamVR_TrackedObject>();
-        return SteamVR_Controller.Input((int)trackedObject.index);
-    }
 
 }

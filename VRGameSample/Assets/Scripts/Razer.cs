@@ -1,17 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ViveReference;
+
 
 public class Razer : MonoBehaviour
-{
-
-    [System.Serializable]
-    public enum WITCH_HANDS
-    {
-        LEFT= 0,
-        RIGHT = 1,
-    }
-
+{ 
     [System.Serializable]
     public enum POINTER_VISIBILITY
     {
@@ -77,9 +71,7 @@ public class Razer : MonoBehaviour
     public void OnEnable()
     {
         pointerOriginTransform = (pointerOriginTransform == null ? 
-                                    (witchHands == WITCH_HANDS.LEFT) ? 
-                                    ViveReferenceGetters.instance.GetLeftControllerTransform() 
-                                    : ViveReferenceGetters.instance.GetRightControllerTransform() 
+                                   ViveReferenceGetters.GetLeftControllerTransform(witchHands)
                                  : pointerOriginTransform);
 
         var tmpMterial = Resources.Load("worldPointer") as Material;
@@ -89,8 +81,8 @@ public class Razer : MonoBehaviour
         }
 
         pointerMaterial = new Material(tmpMterial);
-        
 
+        InitPointer();
     }
 
     public void OnDisable()
@@ -153,14 +145,14 @@ public class Razer : MonoBehaviour
 
     private  void InitPointer()
     {
-        pointerHolder = GameObject.Find(string.Format("PointerHolder"));
+        pointerHolder = new GameObject(string.Format("PointerHolder"));
         pointerHolder.transform.localPosition = Vector3.zero;
 
         pointerBeam = GameObject.CreatePrimitive(PrimitiveType.Cube);
         pointerBeam.transform.name = string.Format("PointerHolder",gameObject.name);
         pointerBeam.transform.SetParent(pointerHolder.transform);
         pointerBeam.GetComponent<BoxCollider>().isTrigger = true;
-        pointerBeam.GetComponent<Rigidbody>().isKinematic = true;
+        pointerBeam.AddComponent<Rigidbody>().isKinematic = true;
         pointerBeam.layer = LayerMask.NameToLayer("Ignore Raycast");
 
         var pointerRenderer = pointerBeam.GetComponent<MeshRenderer>();
@@ -188,7 +180,7 @@ public class Razer : MonoBehaviour
         pointerTip.transform.name = string.Format("Pointer", gameObject.name);
         pointerTip.transform.SetParent(pointerHolder.transform);
         pointerTip.GetComponent<Collider>().isTrigger = true;
-        pointerTip.GetComponent<Rigidbody>().isKinematic = true;
+        pointerTip.AddComponent<Rigidbody>().isKinematic = true;
         pointerTip.layer = LayerMask.NameToLayer("Ignore Raycast");
 
 
@@ -199,7 +191,7 @@ public class Razer : MonoBehaviour
 
     private void TogglePointer(bool state)
     {
-        state = (pointerVisibility == POINTER_VISIBILITY.ALWAYS_ON ? true : false);
+        state = (pointerVisibility == POINTER_VISIBILITY.ALWAYS_ON ? true : state);
 
         if(pointerBeam)
         {
@@ -209,6 +201,24 @@ public class Razer : MonoBehaviour
         if(pointerTip)
         {
             pointerTip.SetActive(tipState);
+        }
+
+        if(pointerBeam && pointerBeam.GetComponentInChildren<Renderer>() && pointerVisibility == POINTER_VISIBILITY.OFF)
+        {
+            pointerBeam.GetComponentInChildren<Renderer>().enabled = false;
+        }
+
+        activeEnable = false;
+
+
+        if(activeEnable)
+        {
+            storedBeamState = pointerBeam.GetComponentInChildren<Renderer>().enabled;
+            storedTipState = pointerTip.GetComponentInChildren<Renderer>().enabled;
+
+            pointerBeam.GetComponentInChildren<Renderer>().enabled = false;
+            pointerTip.GetComponentInChildren<Renderer>().enabled = false;
+
         }
     }
 
@@ -251,6 +261,7 @@ public class Razer : MonoBehaviour
             pointerConstantDistance = collidedWith.distance;
             pointerConstantTarget = collidedWith.transform;
             pointerConstantRaycastHit = collidedWith;
+            destinationPosition = pointerTip.transform.position;
 
             //PointerIn
         }
