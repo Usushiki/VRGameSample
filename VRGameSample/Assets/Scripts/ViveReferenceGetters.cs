@@ -33,15 +33,17 @@ public class ViveReferenceGetters : MonoBehaviour
     [SerializeField]
     private SteamVR_TrackedObject leftControllerTracked;
 
-
-
+ 
     [Tooltip("Right Controller")]
     [SerializeField]
     private GameObject rightController;
+    [SerializeField]
+    private SteamVR_TrackedObject rightControllerTracked;
 
 
 
-    
+
+
 
     private int leftControllerIndex = -1;
     private int rightControllerIndex = -1;
@@ -76,25 +78,62 @@ public class ViveReferenceGetters : MonoBehaviour
         if (leftControllerTracked == null) throw new UnityException("left Hand SteamVR_TrackedObject is not assingned.");
 
         if (rightController == null) throw new UnityException("right hand game object is not assingned.");
-               	
+        if (rightControllerTracked == null) throw new UnityException("right hand SteamVR_TrackedObject is not assingned");       	
+
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
-		
+
+        if (leftControllerTracked == null || rightControllerTracked == null)
+            throw new UnityException("Left or/and Right SteamVR Tracker is nor assigned");
+
+        //コントローラーIDの更新
+        leftControllerIndex = (int)leftControllerTracked.index;
+        rightControllerIndex = (int)rightControllerTracked.index;
+
+        //コントローラーの入力状態の更新
+        if(leftControllerIndex > -1)leftInput = SteamVR_Controller.Input(leftControllerIndex);
+        if(rightControllerIndex > -1)rightInput = SteamVR_Controller.Input(rightControllerIndex);
 	}
 
 
-    //LeftController
+    /// <summary>
+    /// コントローラーのGameObjectを取得
+    /// </summary>
+    /// <param name="witch_Hands">どっちの手か</param>
+    /// <returns></returns>
     public static GameObject GetControllerObject(WITCH_HANDS witch_Hands)
     {
         return witch_Hands == WITCH_HANDS.LEFT ? instance.leftController : instance.rightController;
     }
+
+    /// <summary>
+    /// コントローラーのTrackedObjectコンポーネントを取得
+    /// </summary>
+    /// <param name="witch_Hands">どっちの手か</param>
+    /// <returns></returns>
+    public static SteamVR_TrackedObject GetControllerTrckedObjectComponent(WITCH_HANDS witch_Hands)
+    {
+        return (witch_Hands == WITCH_HANDS.LEFT) ? instance.leftControllerTracked : instance.rightControllerTracked;
+    }
+
+    /// <summary>
+    /// コントローラーのTransformを取得
+    /// </summary>
+    /// <param name="witch_Hands"><どっちの手か/param>
+    /// <returns></returns>
     public static Transform GetLeftControllerTransform(WITCH_HANDS witch_Hands)
     {
         return witch_Hands == WITCH_HANDS.LEFT ? instance.leftController.transform : instance.rightController.transform;
     }
+
+    /// <summary>
+    /// コントローラーの入力デバイスを取得
+    /// </summary>
+    /// <param name="witch_Hands">どっちの手か</param>
+    /// <returns></returns>
     public static SteamVR_Controller.Device GetLeftControllerInputDevice(WITCH_HANDS witch_Hands)
     {
         SteamVR_Controller.Device input = (witch_Hands == WITCH_HANDS.LEFT) ? instance.leftInput : instance.rightInput;
