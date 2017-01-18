@@ -71,7 +71,7 @@ public class Razer : MonoBehaviour
     public void OnEnable()
     {
         pointerOriginTransform = (pointerOriginTransform == null ? 
-                                   ViveReferenceGetters.GetLeftControllerTransform(witchHands)
+                                   ViveReferenceGetters.GetControllerTransform(witchHands)
                                  : pointerOriginTransform);
 
         var tmpMterial = Resources.Load("worldPointer") as Material;
@@ -138,6 +138,17 @@ public class Razer : MonoBehaviour
                 pointerBeam.GetComponentInChildren<Renderer>().enabled = storedBeamState;
                 pointerTip.GetComponentInChildren<Renderer>().enabled = storedTipState;
             }
+
+
+            var device = ViveReferenceGetters.GetControllerInputDevice(witchHands);
+            if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
+            {
+                pointerTip.GetComponent<Collider>().enabled = true;
+            }
+            else if(device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger))
+            {
+                pointerTip.GetComponent<Collider>().enabled = false;
+            }
         }
 	}
 
@@ -180,6 +191,7 @@ public class Razer : MonoBehaviour
         pointerTip.transform.name = string.Format("Pointer", gameObject.name);
         pointerTip.transform.SetParent(pointerHolder.transform);
         pointerTip.GetComponent<Collider>().isTrigger = true;
+        pointerTip.GetComponent<Collider>().enabled = false;
         pointerTip.AddComponent<Rigidbody>().isKinematic = true;
         pointerTip.layer = LayerMask.NameToLayer("Ignore Raycast");
 

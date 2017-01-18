@@ -37,14 +37,17 @@ public class TargetGenerator : MonoBehaviour
 
      
         this.UpdateAsObservable()
-             .ThrottleFirst(System.TimeSpan.FromSeconds(5))
+             .ThrottleFirst(System.TimeSpan.FromSeconds(2))
              .Subscribe(_ =>
              {
-                 var target = pool.GetInstance();
-                 var point = GetSpawnPoint();
+                 if (CheckEmptyPoint() & (EventTimer.instance.startTimer && EventTimer.instance.CurrentTime > 0.0f))
+                 {
+                     var target = pool.GetInstance();
+                     var point = GetSpawnPoint();
 
-                 target.transform.position = point.transform.position;
-                 target.transform.parent = point.transform;
+                     target.transform.position = point.transform.position;
+                     target.transform.parent = point.transform;
+                 }
              }
              );
 

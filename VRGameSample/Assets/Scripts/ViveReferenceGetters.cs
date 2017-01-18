@@ -124,7 +124,7 @@ public class ViveReferenceGetters : MonoBehaviour
     /// </summary>
     /// <param name="witch_Hands"><どっちの手か/param>
     /// <returns></returns>
-    public static Transform GetLeftControllerTransform(WITCH_HANDS witch_Hands)
+    public static Transform GetControllerTransform(WITCH_HANDS witch_Hands)
     {
         return witch_Hands == WITCH_HANDS.LEFT ? instance.leftController.transform : instance.rightController.transform;
     }
@@ -134,7 +134,7 @@ public class ViveReferenceGetters : MonoBehaviour
     /// </summary>
     /// <param name="witch_Hands">どっちの手か</param>
     /// <returns></returns>
-    public static SteamVR_Controller.Device GetLeftControllerInputDevice(WITCH_HANDS witch_Hands)
+    public static SteamVR_Controller.Device GetControllerInputDevice(WITCH_HANDS witch_Hands)
     {
         SteamVR_Controller.Device input = (witch_Hands == WITCH_HANDS.LEFT) ? instance.leftInput : instance.rightInput;
 
