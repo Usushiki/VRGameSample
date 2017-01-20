@@ -37,7 +37,7 @@ public class TargetGenerator : MonoBehaviour
 
      
         this.UpdateAsObservable()
-             .ThrottleFirst(System.TimeSpan.FromSeconds(2))
+             .ThrottleFirst(System.TimeSpan.FromSeconds(1.0f))
              .Subscribe(_ =>
              {
                  if (CheckEmptyPoint() & (EventTimer.instance.startTimer && EventTimer.instance.CurrentTime > 0.0f))
@@ -47,6 +47,7 @@ public class TargetGenerator : MonoBehaviour
 
                      target.transform.position = point.transform.position;
                      target.transform.parent = point.transform;
+                     target.GetComponentInChildren<Target>().SetParentGameObject(target);
                  }
              }
              );

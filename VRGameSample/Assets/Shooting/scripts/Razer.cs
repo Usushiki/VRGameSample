@@ -190,6 +190,7 @@ public class Razer : MonoBehaviour
         pointerCursorOriginalScale = pointerTip.transform.localScale;
         pointerTip.transform.name = string.Format("Pointer", gameObject.name);
         pointerTip.transform.SetParent(pointerHolder.transform);
+        pointerTip.tag = "Pointer";
         pointerTip.GetComponent<Collider>().isTrigger = true;
         pointerTip.GetComponent<Collider>().enabled = false;
         pointerTip.AddComponent<Rigidbody>().isKinematic = true;

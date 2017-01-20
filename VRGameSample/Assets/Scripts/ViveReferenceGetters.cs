@@ -42,7 +42,9 @@ public class ViveReferenceGetters : MonoBehaviour
 
 
 
-
+    [Tooltip("Vive player body ")]
+    [SerializeField]
+    private Transform vivePlayerbody;
 
 
     private int leftControllerIndex = -1;
@@ -78,8 +80,10 @@ public class ViveReferenceGetters : MonoBehaviour
         if (leftControllerTracked == null) throw new UnityException("left Hand SteamVR_TrackedObject is not assingned.");
 
         if (rightController == null) throw new UnityException("right hand game object is not assingned.");
-        if (rightControllerTracked == null) throw new UnityException("right hand SteamVR_TrackedObject is not assingned");       	
+        if (rightControllerTracked == null) throw new UnityException("right hand SteamVR_TrackedObject is not assingned");
 
+
+        if (vivePlayerbody == null) throw new UnityException("player body transform is not assingned");
 	}
 	
 	// Update is called once per frame
@@ -148,5 +152,12 @@ public class ViveReferenceGetters : MonoBehaviour
         return null;
     }
 
-
+    /// <summary>
+    /// プレイヤーのTransformを取得
+    /// </summary>
+    /// <returns></returns>
+    public static Transform GetBodyTransform()
+    {
+        return (instance.vivePlayerbody != null) ? instance.vivePlayerbody : null;
+    }
 }

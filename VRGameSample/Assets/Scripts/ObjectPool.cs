@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class ObjectPool : MonoBehaviour {
 
@@ -95,7 +96,7 @@ public class ObjectPool : MonoBehaviour {
 
     public GameObject GetInstance(Transform parent)
     {
-        pooledObjectList.RemoveAll((obj) => obj == null);
+        pooledObjectList.RemoveAll(obj => obj == null);
 
         foreach (GameObject obj in pooledObjectList)
         {
@@ -140,6 +141,8 @@ public class ObjectPool : MonoBehaviour {
         }
     }
 
+   
+    
 
     public static ObjectPool GetObjectPool(GameObject obj)
     {
